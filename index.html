@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minha Loja Online</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Header/Navbar -->
+    <header>
+        <nav class="navbar">
+            <div class="container">
+                <div class="logo">Minha Loja</div>
+                <ul class="nav-links">
+                    <li><a href="#home">Início</a></li>
+                    <li><a href="#produtos">Produtos</a></li>
+                    <li><a href="#contato">Contato</a></li>
+                </ul>
+                <div class="cart-icon">
+                    <span>🛒</span>
+                    <span class="cart-count" id="cartCount">0</span>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <h1>Bem-vindo à Nossa Loja</h1>
+            <p>Encontre os melhores produtos com preços incríveis</p>
+            <button class="btn-primary" onclick="document.getElementById('produtos').scrollIntoView({behavior: 'smooth'})">
+                Ver Produtos
+            </button>
+        </div>
+    </section>
+
+    <!-- Produtos Section -->
+    <section id="produtos" class="produtos">
+        <div class="container">
+            <h2>Nossos Produtos</h2>
+            
+            <!-- Filtros -->
+            <div class="filtros-container">
+                <div class="filtro-grupo">
+                    <label for="filtroCategoria">Categoria:</label>
+                    <select id="filtroCategoria" onchange="aplicarFiltros()">
+                        <option value="">Todas as categorias</option>
+                        <option value="eletrônicos">Eletrônicos</option>
+                        <option value="acessórios">Acessórios</option>
+                        <option value="games">Games</option>
+                    </select>
+                </div>
+
+                <div class="filtro-grupo">
+                    <label for="filtroPreco">Preço Máximo: <span id="precoValor">500</span></label>
+                    <input type="range" id="filtroPreco" min="0" max="500" value="500" onchange="aplicarFiltros()" class="slider">
+                </div>
+
+                <div class="filtro-grupo">
+                    <label for="filtroOrdenacao">Ordenar por:</label>
+                    <select id="filtroOrdenacao" onchange="aplicarFiltros()">
+                        <option value="nome-asc">Nome (A-Z)</option>
+                        <option value="nome-desc">Nome (Z-A)</option>
+                        <option value="preco-asc">Preço (Menor)</option>
+                        <option value="preco-desc">Preço (Maior)</option>
+                    </select>
+                </div>
+
+                <button class="btn-limpar-filtros" onclick="limparFiltros()">Limpar Filtros</button>
+            </div>
+
+            <!-- Resultado de busca -->
+            <div class="resultado-filtro" id="resultadoFiltro"></div>
+
+            <!-- Grid de produtos -->
+            <div class="produtos-grid" id="produtosGrid">
+                <!-- Produtos serão carregados aqui via JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Minha Loja. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <!-- Modal do Carrinho -->
+    <div id="cartModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="fecharCarrinho()">&times;</span>
+            <h2>Carrinho de Compras</h2>
+            <div id="cartItems"></div>
+            <div class="cart-total">
+                <strong>Total: R$ <span id="cartTotal">0.00</span></strong>
+            </div>
+            <button class="btn-primary" onclick="finalizarCompra()">Finalizar Compra</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
