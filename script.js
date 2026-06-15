@@ -1,68 +1,114 @@
-// Produtos de exemplo
+// Produtos de exemplo com categorias
 const produtos = [
     {
         id: 1,
-        nome: 'Produto 1',
-        descricao: 'Descrição do produto 1',
-        preco: 99.99,
-        emoji: '📱'
+        nome: 'Smartphone Pro',
+        descricao: 'Smartphone de última geração',
+        preco: 299.99,
+        emoji: '📱',
+        categoria: 'eletrônicos'
     },
     {
         id: 2,
-        nome: 'Produto 2',
-        descricao: 'Descrição do produto 2',
-        preco: 149.99,
-        emoji: '💻'
+        nome: 'Notebook Ultra',
+        descricao: 'Notebook de alta performance',
+        preco: 399.99,
+        emoji: '💻',
+        categoria: 'eletrônicos'
     },
     {
         id: 3,
-        nome: 'Produto 3',
-        descricao: 'Descrição do produto 3',
+        nome: 'Fone Bluetooth',
+        descricao: 'Fone com cancelamento de ruído',
         preco: 79.99,
-        emoji: '🎧'
+        emoji: '🎧',
+        categoria: 'acessórios'
     },
     {
         id: 4,
-        nome: 'Produto 4',
-        descricao: 'Descrição do produto 4',
+        nome: 'Smartwatch Elite',
+        descricao: 'Relógio inteligente avançado',
         preco: 199.99,
-        emoji: '⌚'
+        emoji: '⌚',
+        categoria: 'eletrônicos'
     },
     {
         id: 5,
-        nome: 'Produto 5',
-        descricao: 'Descrição do produto 5',
-        preco: 129.99,
-        emoji: '📷'
+        nome: 'Câmera Digital',
+        descricao: 'Câmera profissional 4K',
+        preco: 249.99,
+        emoji: '📷',
+        categoria: 'eletrônicos'
     },
     {
         id: 6,
-        nome: 'Produto 6',
-        descricao: 'Descrição do produto 6',
-        preco: 89.99,
-        emoji: '🎮'
+        nome: 'Console Gaming',
+        descricao: 'Console de última geração',
+        preco: 349.99,
+        emoji: '🎮',
+        categoria: 'games'
+    },
+    {
+        id: 7,
+        nome: 'Controle Sem Fio',
+        descricao: 'Controle para consoles',
+        preco: 69.99,
+        emoji: '🕹️',
+        categoria: 'games'
+    },
+    {
+        id: 8,
+        nome: 'Capa para Celular',
+        descricao: 'Capa resistente e estilosa',
+        preco: 29.99,
+        emoji: '📱',
+        categoria: 'acessórios'
+    },
+    {
+        id: 9,
+        nome: 'Carregador Rápido',
+        descricao: 'Carregador 100W super rápido',
+        preco: 49.99,
+        emoji: '⚡',
+        categoria: 'acessórios'
     }
 ];
 
 // Carrinho de compras
 let carrinho = [];
+let produtosFiltrados = [...produtos];
 
 // Carregar produtos na página
 document.addEventListener('DOMContentLoaded', () => {
     carregarProdutos();
     carregarCarrinho();
+    atualizarSliderLabel();
 });
+
+// Atualizar label do slider
+function atualizarSliderLabel() {
+    const slider = document.getElementById('filtroPreco');
+    slider.addEventListener('input', (e) => {
+        document.getElementById('precoValor').textContent = e.target.value;
+    });
+}
 
 function carregarProdutos() {
     const produtosGrid = document.getElementById('produtosGrid');
     produtosGrid.innerHTML = '';
 
-    produtos.forEach(produto => {
+    if (produtosFiltrados.length === 0) {
+        produtosGrid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; padding: 2rem;">Nenhum produto encontrado</p>';
+        return;
+    }
+
+    produtosFiltrados.forEach(produto => {
         const card = document.createElement('div');
         card.className = 'produto-card';
         card.innerHTML = `
             <div class="produto-imagem">${produto.emoji}</div>
             <div class="produto-info">
+                <p class="produto-categoria">${produto.categoria}</p>
                 <h3 class="produto-nome">${produto.nome}</h3>
                 <p class="produto-descricao">${produto.descricao}</p>
                 <p class="produto-preco">R$ ${produto.preco.toFixed(2)}</p>
@@ -73,6 +119,58 @@ function carregarProdutos() {
         `;
         produtosGrid.appendChild(card);
     });
+}
+
+function aplicarFiltros() {
+    const categoria = document.getElementById('filtroCategoria').value;
+    const precoMaximo = parseFloat(document.getElementById('filtroPreco').value);
+    const ordenacao = document.getElementById('filtroOrdenacao').value;
+
+    // Filtrar por categoria
+    produtosFiltrados = produtos.filter(produto => {
+        const categoryMatch = categoria === '' || produto.categoria === categoria;
+        const priceMatch = produto.preco <= precoMaximo;
+        return categoryMatch && priceMatch;
+    });
+
+    // Aplicar ordenação
+    switch(ordenacao) {
+        case 'nome-asc':
+            produtosFiltrados.sort((a, b) => a.nome.localeCompare(b.nome));
+            break;
+        case 'nome-desc':
+            produtosFiltrados.sort((a, b) => b.nome.localeCompare(a.nome));
+            break;
+        case 'preco-asc':
+            produtosFiltrados.sort((a, b) => a.preco - b.preco);
+            break;
+        case 'preco-desc':
+            produtosFiltrados.sort((a, b) => b.preco - a.preco);
+            break;
+    }
+
+    // Atualizar resultado
+    atualizarResultado();
+    carregarProdutos();
+}
+
+function atualizarResultado() {
+    const resultadoDiv = document.getElementById('resultadoFiltro');
+    if (produtosFiltrados.length === 0) {
+        resultadoDiv.textContent = 'Nenhum produto encontrado com os filtros selecionados';
+    } else {
+        resultadoDiv.textContent = `${produtosFiltrados.length} produto(s) encontrado(s)`;
+    }
+}
+
+function limparFiltros() {
+    document.getElementById('filtroCategoria').value = '';
+    document.getElementById('filtroPreco').value = 500;
+    document.getElementById('filtroOrdenacao').value = 'nome-asc';
+    document.getElementById('precoValor').textContent = '500';
+    produtosFiltrados = [...produtos];
+    document.getElementById('resultadoFiltro').textContent = '';
+    carregarProdutos();
 }
 
 function adicionarAoCarrinho(produtoId) {
